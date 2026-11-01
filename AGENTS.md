@@ -13,8 +13,8 @@
 ### 两个仓库
 | | 路径 | 说明 |
 |---|---|---|
-| App | `~/Documents/code/github/ExcalidrawZ`（本仓库） | Swift/SwiftUI。Xcode 26.6（作者用 Xcode 27） |
-| 内核 | `~/Documents/code/github/excalidraw` | chocoford/excalidraw 的 `ExcalidrawZ-core` 分支副本（**浅克隆**，同步上游前先 `git fetch --unshallow`）。TypeScript/React monorepo，yarn 1.22（用 `corepack yarn`），vitest，Node 24 |
+| App | `~/Documents/code/github/ExcalidrawZ`（本仓库） | Swift/SwiftUI。Xcode 26.6（作者用 Xcode 27）。远程：`origin`=chocoford/ExcalidrawZ（上游），`fork`=denkensk/ExcalidrawZ（用户的 fork，SSH 推送） |
+| 内核 | `~/Documents/code/github/excalidraw` | chocoford/excalidraw 的 `ExcalidrawZ-core` 分支副本（已补全历史，不再是浅克隆）。远程：`origin`=chocoford/excalidraw，`fork`=denkensk/excalidraw（fork 里没有 `ExcalidrawZ-core` 分支，只有 `master`）。TypeScript/React monorepo，yarn 1.22（用 `corepack yarn`），vitest，Node 24 |
 
 - 内核构建产物 `excalidraw-app/build` 要拷到本仓库 `ExcalidrawZ/Resources/excalidraw-latest`（git 忽略、仓库里没有）。没有它 App 就没有画布。
 - 两个仓库同时升级：Swift 端调用的 `window.excalidrawZHelper` 接口必须在内核里存在。
@@ -37,7 +37,7 @@
 - **Swift 包**：本机从 github.com 用 git 克隆会被中途断开。`scripts/fetch-packages.py` 按 `Package.resolved` 从 codeload 下载源码包到 `build/LocalPackages`，生成 `build/ExcalidrawZPersonal.xcworkspace`，用本地包覆盖远程依赖。不要用 `-project` 直接构建，也不要跑 `-showBuildSettings`：都会去 git 克隆，然后卡住。
 - **看 App 日志**（只写 stdout）：`open --stdout /tmp/xz-app.log --stderr /tmp/xz-app.log ~/Applications/"ExcalidrawZ Personal.app"`。
 - **内核常用命令**（在内核目录）：`corepack yarn build`；`corepack yarn -s tsc --noEmit`；`corepack yarn -s vitest run <文件>`；`corepack yarn -s eslint <文件>`。格式化用 `node_modules/.bin/prettier --write <文件>`。**不要用 `yarn prettier`**：那是仓库脚本，会格式化整个仓库。
-- 自建用到的本地文件（git 忽略）：`Config/Secrets.plist`、`Config/Overrides.xcconfig`、`scripts/`、`build/`、`ExcalidrawZ/Resources/excalidraw-latest`。
+- 自建用到的本地文件（git 忽略、不提交）：`Config/Secrets.plist`、`Config/Overrides.xcconfig`、`build/`、`ExcalidrawZ/Resources/excalidraw-latest`。`scripts/`、`AGENTS.md`、`CLAUDE.md`、`tasks/`、`memory/` 虽在 .gitignore 里，但已用 `git add -f` 提交到 fork，之后的修改照常 `git add` 即可（新文件要 `-f`）。
 
 ### 自建版相对官方版的配置差异
 - Release Bundle ID `com.qingcan.excalidrawz`；Quick Look 扩展 `com.qingcan.excalidrawz.QLPreviewExt`。
@@ -47,7 +47,7 @@
 - 已知日志、不用处理：`SyncCoordinator ... Local storage is not available`（实际是 iCloud 上传失败，本地保存不受影响）；`IMKCFRunLoopWakeUpReliable`（输入法框架）。
 
 ### 约定
-- 分支 `feat/<名字>`，不在 `main` 上提交；只在用户要求时提交。
+- 分支 `feat/<名字>`，不在 `main` 上提交；只在用户要求时提交。两个仓库都推到 `fork` 的同名分支（目前是 `feat/partial-text-color`），不推 `origin`。
 - ExcalidrawZ 特有的内核改动：逻辑放新文件，原有文件只加挂接点，并用 `// ExcalidrawZ:` 注释标记，方便以后同步上游。
 - 内核代码风格：prettier + eslint（含 import/order），改完对改动的文件跑 tsc、eslint 和相关测试。tsc 也检查测试文件（vitest 不查）：写完测试要再跑一次，否则 `yarn build` 会失败。
 - 网页侧的测试（jsdom、WebKit 截图）覆盖不到 Swift 解码：改了数据结构要单独验证 Swift 端能读。

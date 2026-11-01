@@ -80,3 +80,8 @@
 **Decision:** 用户想要"选中几个框，对齐并等距"。内核已有"水平 / 垂直等距分布"（选中 3 个以上才显示，快捷键 Alt+H / Alt+V），配合"垂直居中 / 水平居中"两步就能做到，用户决定不开发。
 **Reason（坑）:** 等距分布（`packages/element/src/distribute.ts`）按 `getSelectedElementsByGroup` 分组，选中的箭头也算一个要分布的对象。框选一排连着箭头的框时，箭头填满了框之间的空隙，框几乎不动（vitest 实测：箭头首尾在框外时，间距 100/200 → 101/199；只选框时 → 150/150）。对齐不受影响，绑定的箭头都跟着框走。所以用等距分布时只选框（Shift+点击）。以后如果要做一键版：把绑定了的箭头排除在分布对象外，先移动所有框，再统一更新箭头（`updateBoundElements` 会同时重算箭头两端，这样不受处理顺序影响）。
 **Affects:** 无代码改动
+
+## 2026-11-02 — publish-to-fork
+**Decision:** 自建版推到用户的 fork：App → denkensk/ExcalidrawZ，内核 → denkensk/excalidraw，两边都用 `feat/partial-text-color` 分支（remote 名 `fork`，`origin` 仍指上游）。内核按功能拆成 3 个提交（局部颜色 / 短箭头 / 统一尺寸）；App 分 3 个提交（自建配置 / 构建脚本 / 项目记忆）。`scripts/` 和项目记忆用 `git add -f` 提交；`Config/Overrides.xcconfig`、`Config/Secrets.plist` 不提交。
+**Reason（坑）:** fork 默认只复制默认分支，denkensk/excalidraw 里没有 `ExcalidrawZ-core`；从浅克隆推送会被 GitHub 拒绝（远端没有浅克隆边界的提交）。所以先 `git fetch --unshallow git@github.com:chocoford/excalidraw.git`（SSH 能稳定拉完，https 克隆会断）再推。gh CLI 没登录，GitHub 操作走 SSH（`~/.ssh/id_ed25519_github`，身份 denkensk）。
+**Affects:** 两个仓库的 git 远程；`.git/info/exclude` 去掉了 AGENTS.md / tasks / memory 三行
