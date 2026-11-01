@@ -132,11 +132,7 @@ final class ScreenAnnotationWebRuntime: NSObject {
     }
 
     private static func pageURL(generation: Int) -> URL {
-#if DEBUG
-        let baseURL = URL(string: "http://127.0.0.1:8486/index.html")!
-#else
-        let baseURL = URL(string: "http://127.0.0.1:8487/index.html")!
-#endif
+        let baseURL = ExcalidrawServer.indexURL
         var components = URLComponents(
             url: baseURL,
             resolvingAgainstBaseURL: false

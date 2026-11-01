@@ -102,8 +102,10 @@ struct ExcalidrawZApp: App {
         // If you want to start the updater manually, pass false to startingUpdater and call .startUpdater() later
         // This is where you can also pass an updater delegate if you need one
 #if os(macOS) && !APP_STORE
+        // Self-built copy: never start the updater, so an official release
+        // can't be installed over this build ("Check for Updates" stays disabled).
         updaterController = SPUStandardUpdaterController(
-            startingUpdater: true,
+            startingUpdater: false,
             updaterDelegate: nil,
             userDriverDelegate: nil
         )

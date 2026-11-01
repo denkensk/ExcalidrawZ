@@ -188,11 +188,7 @@ class ExcalidrawCore: NSObject, ObservableObject {
         let request: URLRequest
         switch self.parent?.type {
             case .normal:
-#if DEBUG
-                request = URLRequest(url: URL(string: "http://127.0.0.1:8486/index.html")!)
-#else
-                request = URLRequest(url: URL(string: "http://127.0.0.1:8487/index.html")!)
-#endif
+                request = URLRequest(url: ExcalidrawServer.indexURL)
                 self.webView.load(request)
             case .collaboration:
                 var url = Secrets.shared.collabURL

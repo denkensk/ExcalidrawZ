@@ -37,8 +37,12 @@ class ExcalidrawServer {
     #if DEBUG
     static let port: UInt16 = 8486
     #else
-    static let port: UInt16 = 8487
+    // Self-built copy: the official release binds 8487, and whichever app
+    // starts second would silently load the other app's Excalidraw core.
+    static let port: UInt16 = 8497
     #endif
+    /// The bundled Excalidraw page served by this server.
+    static let indexURL = URL(string: "http://127.0.0.1:\(port)/index.html")!
     // Keep both the editor resources and local Viewer transport on loopback.
     let server = HTTPServer(
         address: try! .inet(ip4: "127.0.0.1", port: ExcalidrawServer.port),

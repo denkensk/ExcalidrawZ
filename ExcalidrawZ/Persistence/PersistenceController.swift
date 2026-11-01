@@ -11,7 +11,10 @@ import Logging
 
 class PersistenceController {
     static let shared = {
-        let cloudKitEnabled = !UserDefaults.standard.bool(forKey: "DisableCloudSync")
+        // Self-built copy has no iCloud entitlement: keep CloudKit off, and
+        // let the settings UI (which reads the same key) show it as off.
+        UserDefaults.standard.register(defaults: ["DisableCloudSync": true])
+        let cloudKitEnabled = false
         let stack = PersistenceController(cloudKitEnabled: cloudKitEnabled)
         stack.prepare()
         return stack

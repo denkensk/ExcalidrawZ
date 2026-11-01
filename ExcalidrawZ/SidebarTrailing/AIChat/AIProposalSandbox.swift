@@ -122,13 +122,7 @@ enum AIProposalSandbox {
 
     @MainActor
     private static func loadLocalExcalidrawPage(in core: ExcalidrawCore) {
-        let url: URL
-        #if DEBUG
-        url = URL(string: "http://127.0.0.1:8486/index.html")!
-        #else
-        url = URL(string: "http://127.0.0.1:8487/index.html")!
-        #endif
-        core.webView.load(URLRequest(url: url))
+        core.webView.load(URLRequest(url: ExcalidrawServer.indexURL))
     }
 
     @MainActor
