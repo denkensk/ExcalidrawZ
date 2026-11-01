@@ -1,0 +1,6 @@
+// Local, git-ignored. Self-built copy signed to run locally (no paid team).
+DEVELOPMENT_TEAM =
+ICLOUD_CONTAINER = iCloud.com.qingcan.excalidrawz
+// No App Group entitlement in this build; an empty id makes the shared
+// appearance lookup fall back gracefully.
+APP_GROUP_IDENTIFIER =

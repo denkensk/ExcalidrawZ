@@ -37,7 +37,7 @@
 - **Swift 包**：本机从 github.com 用 git 克隆会被中途断开。`scripts/fetch-packages.py` 按 `Package.resolved` 从 codeload 下载源码包到 `build/LocalPackages`，生成 `build/ExcalidrawZPersonal.xcworkspace`，用本地包覆盖远程依赖。不要用 `-project` 直接构建，也不要跑 `-showBuildSettings`：都会去 git 克隆，然后卡住。
 - **看 App 日志**（只写 stdout）：`open --stdout /tmp/xz-app.log --stderr /tmp/xz-app.log ~/Applications/"ExcalidrawZ Personal.app"`。
 - **内核常用命令**（在内核目录）：`corepack yarn build`；`corepack yarn -s tsc --noEmit`；`corepack yarn -s vitest run <文件>`；`corepack yarn -s eslint <文件>`。格式化用 `node_modules/.bin/prettier --write <文件>`。**不要用 `yarn prettier`**：那是仓库脚本，会格式化整个仓库。
-- 自建用到的本地文件（git 忽略、不提交）：`Config/Secrets.plist`、`Config/Overrides.xcconfig`、`build/`、`ExcalidrawZ/Resources/excalidraw-latest`。`scripts/`、`AGENTS.md`、`CLAUDE.md`、`tasks/`、`memory/` 虽在 .gitignore 里，但已用 `git add -f` 提交到 fork，之后的修改照常 `git add` 即可（新文件要 `-f`）。
+- 自建用到的本地文件（git 忽略、不提交）：`Config/Secrets.plist`、`build/`、`ExcalidrawZ/Resources/excalidraw-latest`。`Config/Overrides.xcconfig`、`scripts/`、`AGENTS.md`、`CLAUDE.md`、`tasks/`、`memory/` 虽在 .gitignore 里，但已用 `git add -f` 提交到 fork，之后的修改照常 `git add` 即可（新文件要 `-f`）。
 
 ### 自建版相对官方版的配置差异
 - Release Bundle ID `com.qingcan.excalidrawz`；Quick Look 扩展 `com.qingcan.excalidrawz.QLPreviewExt`。
