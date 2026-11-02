@@ -35,7 +35,8 @@
 ### 构建与运行
 - **一键构建**：`./scripts/build-personal.sh` → 编译内核 → 拷进 App → 下载 Swift 包 → 编译 Release（本地签名）→ 装到 `~/Applications/ExcalidrawZ Personal.app`。`SKIP_CORE=1` 跳过内核。安装前先退出正在运行的 App。App 正在运行时，可以先用 `DEST=<临时目录>/ExcalidrawZ\ Personal.app` 构建，经用户同意后用 `osascript -e 'tell application id "com.qingcan.excalidrawz" to quit'` 正常退出，再替换安装。
 - **Swift 包**：本机从 github.com 用 git 克隆会被中途断开。`scripts/fetch-packages.py` 按 `Package.resolved` 从 codeload 下载源码包到 `build/LocalPackages`，生成 `build/ExcalidrawZPersonal.xcworkspace`，用本地包覆盖远程依赖。不要用 `-project` 直接构建，也不要跑 `-showBuildSettings`：都会去 git 克隆，然后卡住。
-- **看 App 日志**（只写 stdout）：`open --stdout /tmp/xz-app.log --stderr /tmp/xz-app.log ~/Applications/"ExcalidrawZ Personal.app"`。
+- **看 App 日志**：info 以上自动写到 `~/Library/Containers/com.qingcan.excalidrawz/Data/Library/Logs/ExcalidrawZ.log`（fix-local-save 起）。要 debug 级别：`open --env EXCALIDRAWZ_LOG_LEVEL=debug --stdout /tmp/xz-app.log --stderr /tmp/xz-app.log ~/Applications/"ExcalidrawZ Personal.app"`。
+- **安全备份**：画布内容每 ≥30 秒另存一份到容器 `Application Support/SafetyBackups/<文件名>-<哈希>/`（独立于保存流程）；用户丢数据时先查这里。App 数据在容器 `Application Support/`（`ExcalidrawZ/*.sqlite`、`FileStorage/`、`backups/`）。
 - **内核常用命令**（在内核目录）：`corepack yarn build`；`corepack yarn -s tsc --noEmit`；`corepack yarn -s vitest run <文件>`；`corepack yarn -s eslint <文件>`。格式化用 `node_modules/.bin/prettier --write <文件>`。**不要用 `yarn prettier`**：那是仓库脚本，会格式化整个仓库。
 - 自建用到的本地文件（git 忽略、不提交）：`Config/Secrets.plist`、`build/`、`ExcalidrawZ/Resources/excalidraw-latest`。`Config/Overrides.xcconfig`、`scripts/`、`AGENTS.md`、`CLAUDE.md`、`tasks/`、`memory/` 虽在 .gitignore 里，但已用 `git add -f` 提交到 fork，之后的修改照常 `git add` 即可（新文件要 `-f`）。
 

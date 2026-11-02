@@ -85,3 +85,19 @@
 **Decision:** 自建版推到用户的 fork：App → denkensk/ExcalidrawZ，内核 → denkensk/excalidraw，两边都用 `feat/partial-text-color` 分支（remote 名 `fork`，`origin` 仍指上游）。内核按功能拆成 3 个提交（局部颜色 / 短箭头 / 统一尺寸）；App 分 3 个提交（自建配置 / 构建脚本 / 项目记忆）。`scripts/` 和项目记忆用 `git add -f` 提交；`Config/Overrides.xcconfig`、`Config/Secrets.plist` 不提交。
 **Reason（坑）:** fork 默认只复制默认分支，denkensk/excalidraw 里没有 `ExcalidrawZ-core`；从浅克隆推送会被 GitHub 拒绝（远端没有浅克隆边界的提交）。所以先 `git fetch --unshallow git@github.com:chocoford/excalidraw.git`（SSH 能稳定拉完，https 克隆会断）再推。gh CLI 没登录，GitHub 操作走 SSH（`~/.ssh/id_ed25519_github`，身份 denkensk）。
 **Affects:** 两个仓库的 git 远程；`.git/info/exclude` 去掉了 AGENTS.md / tasks / memory 三行
+
+## 2026-11-02 — fix-local-save
+**Decision:** 本地文件夹文件的修改会在某种未复现的状态下被保存流程悄悄丢弃（用户丢了约一小时内容，找不回）。根因没找到前，先加三层保护，不改原有保存逻辑：
+1. 安全备份 `ExcalidrawZSafetyBackup`：每条 `stateChanged`（以及 AI/MCP 的程序提交）在任何保存检查之前通知它；约 10 秒后用 `getCurrentFileSnapshot()`（不参与自动保存）读画布实际内容，元素签名变了才写，同一文件至少隔 30 秒，每个文件留最近 30 份。写到容器 `Application Support/SafetyBackups/<文件名>-<id 哈希 8 位>/<时间>.excalidraw`，`source.txt` 记原路径。按网页里实际加载的文件（`currentLoadedFileID`）归类。
+2. 看门狗：本地文件（id 是 file URL）的画布签名和磁盘不一致、且画布 15 秒内没再变，就 `publishError` 弹一次提示并记 warning；磁盘对上后记 "is saved again"。
+3. 日志：`ExcalidrawZFileLogHandler` 把 info 以上写到容器 `Library/Logs/ExcalidrawZ.log`（>10MB 轮换 `.1.log`）；`EXCALIDRAWZ_LOG_LEVEL=debug` 可调高 Release 的 stdout 级别；原来静默丢弃保存的 6 处改记 warning（"Dropped canvas update" / "Rejected canvas update" / "Dropped stateChanged" / "Skipped applying canvas data"）。
+**Reason:** 静默丢弃的检查有好几处，都只记 debug，Release 看不到；全新启动的 App 下复现不出来（手动编辑、程序修改、切换文件、⌘W 关窗都正常）。备份不依赖保存流程的任何一步，最多丢约 30 秒；看门狗让问题当场暴露。
+**坑:**
+- 元素签名要包含 `versionNonce`：MCP `create_view` 会用同一个 id、同一个 version 重建元素，只比 id+version 会认为没变。
+- 程序修改（MCP/AI）不走 `stateChanged`，走 `ExcalidrawDocumentProgrammaticSnapshotCommitter`，要单独挂接。
+- 打开本地文件后几秒，App 会做一次"只写 appState"的保存（不记检查点）——出事那次文件 11:37:04 的修改时间就是它，不代表用户内容存过。
+- 本地文件检查点在 `ExcalidrawZLocal.sqlite`（不是 `Model.sqlite`）的 `ZLOCALFILECHECKPOINT`；`updateLocalFile` 成功一次就会写一条。
+- 测"写不进去"：`chmod a-w` 没用（原子写入是替换文件），要用 `chflags uchg`。
+- 不点界面驱动 App：`open -a <app> <已登记文件夹里的文件>` 会以本地文件打开；容器偏好 `ExcalidrawZMCPServerEnabled=true` 打开 MCP（127.0.0.1:8490/mcp），basic 模式只有 `create_view` 等，打开/切换文件的工具是付费的 optimized 模式（不要绕过）。终端没有辅助功能权限，发不了按键。
+- App 内 ⌘N 是新建文件，不是新窗口。每个窗口有自己的 `FileState`（`ContentView` 的 `@StateObject`），文件夹监控全 App 共用。
+**Affects:** 新文件 `ExcalidrawZ/ExcalidrawView/Engine/ExcalidrawZSafetyBackup.swift`、`ExcalidrawZ/Utils/ExcalidrawZFileLogHandler.swift`；挂接点 `ExcalidrawCore.swift`、`ExcalidrawCore+ScriptMessage.swift`、`Snapshot/ExcalidrawDocumentProgrammaticSnapshotCommitter.swift`、`ExcalidrawZApp.swift`；日志级别 `FileState.swift`、`ExcalidrawEditor.swift`、`ExcalidrawDocumentSyncController.swift`
