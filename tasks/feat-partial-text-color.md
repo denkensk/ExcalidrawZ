@@ -2,7 +2,7 @@
 id: feat-partial-text-color
 title: 文字框内局部文字上色（自建 Mac 版）
 status: active
-updated: 2026-11-01
+updated: 2026-11-02
 ---
 
 ## Goal
@@ -23,14 +23,12 @@ updated: 2026-11-01
 - [x] 自建配置、`scripts/build-personal.sh`、`scripts/fetch-packages.py`；App 装到 `~/Applications/ExcalidrawZ Personal.app`
 - [x] 修复：Swift `AnyCodable` 读不了对象数组 → 颜色区间改存为平行数组
 - [x] 用户实测："看着好像没问题了"；颜色能正常保存
-- [ ] 两个仓库的改动都**还没提交**（`feat/partial-text-color` 分支），等用户决定
+- [x] 两个仓库都已提交并推到 fork（见 decisions 2026-11-02 publish-to-fork），现在在 `custom` 分支里
 - [ ] 可选：Quick Look、历史版本、备份预览也显示局部颜色（`ExcalidrawRenderer.swift`，约半天）
 - [ ] 可选：加粗（数据结构已留位置；建议用描边模拟，字宽不变）
 
 ## Next
-等用户决定要不要提交两个仓库的改动。提交的话在各自的 `feat/partial-text-color` 分支上分开提交：
-- 内核：2 个新模块和 2 个测试文件，加 6 个原有文件里的挂接点。
-- ExcalidrawZ：10 个自建配置文件。
+功能已完成并提交。剩下的都是可选项（见上），等用户提出再做。
 
 ## Relevant files
 内核（`~/Documents/code/github/excalidraw`）：

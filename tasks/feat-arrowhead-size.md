@@ -2,7 +2,7 @@
 id: feat-arrowhead-size
 title: 缩短箭头两翼（自建 Mac 版）
 status: active
-updated: 2026-11-01
+updated: 2026-11-02
 ---
 
 ## Goal
@@ -16,15 +16,14 @@ updated: 2026-11-01
 - [x] 内核完整测试套件（C 尺寸）：163 个文件全部通过（2676 通过、47 跳过、1 todo），没有快照受影响
 - [x] 按 C 构建（先装到临时目录，确认网页包里尺寸是 13、角度是 30），经用户同意正常退出 App 后装到 `~/Applications` 并重新打开；网页包能正常加载，日志无新错误
 - [ ] 用户在 App 里实测、确认尺寸
-- [ ] 改动还没提交
+- [x] 已提交并推到 fork（内核里单独一个提交），现在在 `custom` 分支里
 
 ## Next
 等用户在 App 里实测：已有文件打开就是新箭头，不用重画。
 - 想换尺寸：只改 `excalidrawZArrowheads.ts` 里的两个常量，然后跑 `./scripts/build-personal.sh`（先退出 App）。尺寸不要低于 13（约 12.2 以下官方测试会失败，10 及以下会除零），角度不超过 30（见 decisions）。
-- 提交：两个仓库的改动都还没提交，等用户要求。箭头只改了内核的 3 个文件（见下），提交时单独开 `feat/arrowhead-size` 分支，和局部颜色分开。
 
 ## Relevant files
-内核（`~/Documents/code/github/excalidraw`，目前在 `feat/partial-text-color` 分支上，和局部颜色的改动混在同一个工作区，但文件不重叠；提交时单独开 `feat/arrowhead-size`）：
+内核（`~/Documents/code/github/excalidraw`，`custom` 分支）：
 - `packages/element/src/excalidrawZArrowheads.ts`：尺寸、角度常量
 - `packages/element/src/bounds.ts`：`getArrowheadSize()` 和 `ARROW_ARROWHEAD_ANGLE` 两处挂接点
 - `packages/element/tests/excalidrawZArrowheads.test.ts`

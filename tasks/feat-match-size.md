@@ -20,15 +20,14 @@ updated: 2026-11-02
 - [x] WebKit 实测截图（`/tmp/xz-matchsize/out/`）：新按钮行显示正常；统一后中心不变、标签居中、箭头绑定保留；撤销、只统一宽/高都正常；只选一个框时整行隐藏
 - [x] 构建（先装到临时目录），经用户同意正常退出 App 后装到 `~/Applications` 并重新打开（2026-11-02）；服务正常启动、7 个本地文件都在，日志没有新错误
 - [ ] 用户实测
-- [ ] 改动还没提交
+- [x] 已提交并推到 fork（内核提交 "ExcalidrawZ: match width / height / size actions"），现在在 `custom` 分支里
 
 ## Next
 等用户在 App 里实测：选中两个以上的框 → 属性面板"对齐"下面第三行。
 - 想改规则（以谁为准、固定点、参与的图形类型）：都在 `excalidrawZMatchSize.tsx` 的 `matchElementsSize` / `isMatchSizeTarget`，改完跑测试和 tsc，再 `./scripts/build-personal.sh`（先退出 App）。
-- 提交：两个仓库都还没提交，等用户要求。这个功能只改了内核（见下），提交时单独开 `feat/match-size` 分支。
 
 ## Relevant files
-内核（`~/Documents/code/github/excalidraw`，和另外两个功能混在同一个工作区，文件不重叠；提交时单独开 `feat/match-size` 分支）：
+内核（`~/Documents/code/github/excalidraw`，`custom` 分支）：
 - 新：`packages/excalidraw/actions/excalidrawZMatchSize.tsx`、`excalidrawZMatchSize.test.tsx`
 - 挂接点：`packages/excalidraw/actions/types.ts`（ActionName）、`actions/index.ts`（导出，触发注册）、`components/Actions.tsx`（`AlignFieldset` 里渲染 `MatchSizeButtons`）
 - 翻译：`packages/excalidraw/locales/en.json`、`zh-CN.json`、`zh-TW.json`（`labels.matchWidth/matchHeight/matchSize`）

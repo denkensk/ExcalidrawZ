@@ -35,11 +35,11 @@ updated: 2026-11-02
 - [x] 装到 `~/Applications`（2026-11-02 17:16，用户同意；签名校验通过、启动正常、日志文件在写）
 - [x] 清理：5 个测试文件、测试备份文件夹、临时构建和调试日志都删了；`MaaS` 只剩 `Core metric`、`Dynamo`
 - [ ] 找到根因并修
-- [x] 已提交到 `fix/local-save` 分支（从 `feat/partial-text-color` 分出，2 个提交：代码、项目记忆），已推到 `fork/fix/local-save`，并快进合并进 `feat/partial-text-color`、推到 `fork`（2026-11-02）
+- [x] 已提交并推送（2 个提交：代码 `4ac1a1a`、项目记忆），现在在 `custom` 分支里（2026-11-02）
 
 ## Next
 1. 根因：下次用户再遇到看门狗提示或丢数据，先查安全备份（容器 `Application Support/SafetyBackups/`）把内容找回，再查 `ExcalidrawZ.log` 里 "Dropped canvas update" / "Rejected canvas update" / "Dropped stateChanged" / "not being saved to disk" 前后的记录。可疑方向：多窗口（菜单里新开窗口，不是 ⌘N）、App 长时间运行 + 睡眠后窗口重建。
-2. 分支：修复已在 `feat/partial-text-color`（自建版的主分支）里，之后照常在它上面构建、提交。
+2. 分支：修复已在 `custom`（定制版主分支）里。
 3. 另记：网页发来的 `didSetActiveTool` 里 `type = bucketfill`（填充桶）Swift 端解码失败，只影响工具栏状态，可以顺手让 Swift 端认识或忽略未知工具。
 4. `/tmp/xz-recovery-125755` 是出事那天 App 数据目录的快照，确认不需要后可以删。
 

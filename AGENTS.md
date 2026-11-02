@@ -48,7 +48,9 @@
 - 已知日志、不用处理：`SyncCoordinator ... Local storage is not available`（实际是 iCloud 上传失败，本地保存不受影响）；`IMKCFRunLoopWakeUpReliable`（输入法框架）。
 
 ### 约定
-- 分支 `feat/<名字>`，不在 `main` 上提交；只在用户要求时提交。两个仓库都推到 `fork` 的同名分支（目前是 `feat/partial-text-color`），不推 `origin`。
+- **分支**：两个仓库的定制版主分支都是 `custom`，构建、安装都从它来；只在用户要求时提交，推到 `fork/custom`，不推 `origin`。
+  - 小改动直接提交到 `custom`；大功能先从 `custom` 开临时 `feat/<名字>`，做完合并回 `custom`、删掉临时分支（本地和 fork）。
+  - 上游基准：App 是 `main`，内核是 `ExcalidrawZ-core`（fork 里是 `master`）。同步官方更新时把上游合并进 `custom`。
 - ExcalidrawZ 特有的内核改动：逻辑放新文件，原有文件只加挂接点，并用 `// ExcalidrawZ:` 注释标记，方便以后同步上游。
 - 内核代码风格：prettier + eslint（含 import/order），改完对改动的文件跑 tsc、eslint 和相关测试。tsc 也检查测试文件（vitest 不查）：写完测试要再跑一次，否则 `yarn build` 会失败。
 - 网页侧的测试（jsdom、WebKit 截图）覆盖不到 Swift 解码：改了数据结构要单独验证 Swift 端能读。

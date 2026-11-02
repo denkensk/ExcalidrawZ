@@ -101,3 +101,8 @@
 - 不点界面驱动 App：`open -a <app> <已登记文件夹里的文件>` 会以本地文件打开；容器偏好 `ExcalidrawZMCPServerEnabled=true` 打开 MCP（127.0.0.1:8490/mcp），basic 模式只有 `create_view` 等，打开/切换文件的工具是付费的 optimized 模式（不要绕过）。终端没有辅助功能权限，发不了按键。
 - App 内 ⌘N 是新建文件，不是新窗口。每个窗口有自己的 `FileState`（`ContentView` 的 `@StateObject`），文件夹监控全 App 共用。
 **Affects:** 新文件 `ExcalidrawZ/ExcalidrawView/Engine/ExcalidrawZSafetyBackup.swift`、`ExcalidrawZ/Utils/ExcalidrawZFileLogHandler.swift`；挂接点 `ExcalidrawCore.swift`、`ExcalidrawCore+ScriptMessage.swift`、`Snapshot/ExcalidrawDocumentProgrammaticSnapshotCommitter.swift`、`ExcalidrawZApp.swift`；日志级别 `FileState.swift`、`ExcalidrawEditor.swift`、`ExcalidrawDocumentSyncController.swift`
+
+## 2026-11-02 — branching
+**Decision:** 两个仓库都改用 `custom` 作为定制版主分支（从 `feat/partial-text-color` 建，已推到 `fork/custom`）。删掉了旧分支：App 的 `feat/partial-text-color`、`fix/local-save`，内核的 `feat/partial-text-color`（本地和 fork 都删了；提交都在 `custom` 里）。以后小改动直接提交到 `custom`，大功能开临时 `feat/<名字>`、做完合并回 `custom` 再删。
+**Reason:** 用户提议。`feat/partial-text-color` 早已装着所有功能、自建配置和项目记忆，名不副实，容易混。
+**Affects:** 两个仓库的分支；`AGENTS.md` 的约定；fork 在 GitHub 上的默认分支仍是 `main`/`master`（gh 没登录，改不了，用户可在网页 Settings 里改）
