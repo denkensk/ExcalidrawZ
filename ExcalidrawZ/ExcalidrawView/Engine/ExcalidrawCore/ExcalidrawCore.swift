@@ -57,6 +57,8 @@ class ExcalidrawCore: NSObject, ObservableObject {
     @Published private(set) var mathImageEditRequest: MathImageEditRequest?
     
     let documentSyncController = ExcalidrawDocumentSyncController()
+    // ExcalidrawZ: safety backups independent of the save pipeline.
+    lazy var safetyBackup = ExcalidrawZSafetyBackup(core: self)
     let currentFileSaveStreamBridge = ExcalidrawCore.CurrentFileSaveStreamBridge()
     private var lastVersion: Int = 0
 

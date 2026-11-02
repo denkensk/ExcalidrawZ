@@ -88,7 +88,17 @@ struct ExcalidrawZApp: App {
 #else
             stdoutHandler.logLevel = .info
 #endif
-            return stdoutHandler
+            // ExcalidrawZ personal: allow `EXCALIDRAWZ_LOG_LEVEL=debug` (etc.)
+            // to raise/lower the stdout log level in Release builds.
+            if let rawLevel = ProcessInfo.processInfo.environment["EXCALIDRAWZ_LOG_LEVEL"],
+               let level = Logger.Level(rawValue: rawLevel.lowercased()) {
+                stdoutHandler.logLevel = level
+            }
+            // ExcalidrawZ personal: always keep a log file as well (info and
+            // above, or the level requested above if it is more verbose).
+            var fileHandler = ExcalidrawZFileLogHandler(label: label)
+            fileHandler.logLevel = min(stdoutHandler.logLevel, .info)
+            return MultiplexLogHandler([stdoutHandler, fileHandler])
         }
         FeatureDiscoveryTips.configureIfAvailable()
         // Cloud storage synchronization follows the process lifecycle, not a

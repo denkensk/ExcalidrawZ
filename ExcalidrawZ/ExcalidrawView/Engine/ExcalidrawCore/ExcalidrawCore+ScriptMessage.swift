@@ -303,6 +303,11 @@ extension ExcalidrawCore: WKScriptMessageHandler {
 
 extension ExcalidrawCore {
     func onStateChanged(_ data: StateChangedMessageData) {
+        // ExcalidrawZ: arm the safety backup before any save guard can drop
+        // this change.
+        Task { @MainActor in
+            self.safetyBackup.noteStateChanged()
+        }
         let documentSyncController = documentSyncController
         Task {
             await documentSyncController.save(data)

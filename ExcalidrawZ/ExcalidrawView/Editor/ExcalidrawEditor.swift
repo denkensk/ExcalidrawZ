@@ -1197,7 +1197,8 @@ struct ExcalidrawEditor: View {
 
     private func persistCanvasUpdate(_ file: ExcalidrawFile) -> CanvasUpdatePersistenceResult {
         guard activeFile?.id == file.id else {
-            logger.debug(
+            // ExcalidrawZ: warning instead of debug, so dropped saves show up in Release logs.
+            logger.warning(
                 "Rejected canvas update: target mismatch file=\(file.id) active=\(activeFile?.id ?? "nil")"
             )
             return .rejected
@@ -1205,12 +1206,12 @@ struct ExcalidrawEditor: View {
 
         // Block updates while loading new file.
         guard !isLoadingFile else {
-            logger.debug("Rejected canvas update: file loading id=\(file.id)")
+            logger.warning("Rejected canvas update: file loading id=\(file.id)") // ExcalidrawZ: was debug
             return .rejected
         }
 
         guard lockedContentState.activeFileLockState != .locked else {
-            logger.debug("Rejected canvas update: active file locked id=\(file.id)")
+            logger.warning("Rejected canvas update: active file locked id=\(file.id)") // ExcalidrawZ: was debug
             return .rejected
         }
 

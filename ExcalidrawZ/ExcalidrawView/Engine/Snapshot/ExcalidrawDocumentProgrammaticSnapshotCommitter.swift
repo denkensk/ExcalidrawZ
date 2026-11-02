@@ -63,6 +63,10 @@ final class ExcalidrawDocumentProgrammaticSnapshotCommitter: @unchecked Sendable
         guard let delegate,
               let core = delegate.snapshotCoordinatorCore else { return }
 
+        // ExcalidrawZ: programmatic (AI/MCP) edits bypass `stateChanged`;
+        // arm the safety backup for them too.
+        await MainActor.run { core.safetyBackup.noteStateChanged() }
+
         let onError = core.publishError
         let currentFileID = await MainActor.run { core.parent?.file?.id }
         guard currentFileID == expectedFileID else { return }

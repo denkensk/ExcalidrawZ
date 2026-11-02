@@ -357,6 +357,10 @@ final class ExcalidrawDocumentSyncController: @unchecked Sendable {
                 webLoadedFileID: loadedID,
                 isCollaboration: type == .collaboration
             ) else {
+                // ExcalidrawZ: this used to drop the change silently.
+                core.logger.warning(
+                    "Dropped stateChanged: file mismatch current=\(currentFileID ?? "nil") webLoaded=\(loadedID ?? "nil")"
+                )
                 return
             }
 
@@ -467,7 +471,7 @@ final class ExcalidrawDocumentSyncController: @unchecked Sendable {
             default:
                 let existingContent: Data? = await MainActor.run { () -> Data? in
                     guard type == .collaboration || core.parent?.file?.id == currentFileID else {
-                        core.logger.debug(
+                        core.logger.warning( // ExcalidrawZ: was debug
                             "Skipped applying canvas data: parent file mismatch expected=\(currentFileID ?? "nil") actual=\(core.parent?.file?.id ?? "nil")"
                         )
                         return nil
@@ -490,7 +494,7 @@ final class ExcalidrawDocumentSyncController: @unchecked Sendable {
 
                 await MainActor.run {
                     guard type == .collaboration || core.parent?.file?.id == currentFileID else {
-                        core.logger.debug(
+                        core.logger.warning( // ExcalidrawZ: was debug
                             "Skipped applying canvas data: parent file mismatch expected=\(currentFileID ?? "nil") actual=\(core.parent?.file?.id ?? "nil")"
                         )
                         return

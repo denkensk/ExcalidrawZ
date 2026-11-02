@@ -1200,6 +1200,8 @@ final class FileState: ObservableObject {
         let hasProgrammaticAllowance = consumeProgrammaticCanvasCommitAllowance(fileID: fileID)
         if shouldIgnoreUpdate {
             guard hasProgrammaticAllowance, !activeCanvasIsLoading else {
+                // ExcalidrawZ: this used to drop the update silently.
+                logger.warning("Dropped canvas update for \(label): update gate closed (canvas loading: \(activeCanvasIsLoading))")
                 return false
             }
             logger.info("Accepting programmatic canvas update while update gate is recovering: \(label)")
